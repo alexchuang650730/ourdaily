@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OurDaily.ai - 个人与团队的日常自动化助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --primary-light: #E6F2FF;
+            --secondary: #FFC107;
+            --dark: #212529;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #28A745;
+            --danger: #DC3545;
+        }
+        
+        .language-selector a.active-lang {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .auth-buttons .btn {
+            margin-left: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069D9;
+            border-color: #0062CC;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: 2px solid var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #E0A800;
+            border-color: #D39E00;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* 英雄区域样式 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light), var(--white));
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* 核心价值区域 */
+        .value-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .value-cards {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .value-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .value-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .value-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .value-card p {
+            color: var(--gray);
+        }
+        
+        /* 模板展示区 */
+        .templates-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .template-cards {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+            justify-content: space-between; /* Distribute space between cards */
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .template-card {
+            flex-basis: calc(33.33% - 15px); /* 3 cards per row, considering gap */
+            min-width: 280px; /* Ensure a minimum width, adjust as needed */
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px; /* Add margin for rows */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .template-image {
+            height: 160px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 50px;
+        }
+        
+        .template-content {
+            padding: 20px;
+        }
+        
+        .template-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .template-content p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* 客户评价区 */
+        .testimonials-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .testimonial-cards {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 80px;
+            color: var(--primary-light);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* 定价区 */
+        .pricing-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .pricing-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .pricing-card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 350px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--primary);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .price span {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--gray);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: var(--gray);
+        }
+        
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ADB5BD;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: var(--white);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #495057;
+            color: #ADB5BD;
+            font-size: 14px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin: 20px 0;
+            }
+            
+            .nav-links li {
+                margin: 0 10px;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .value-cards, .testimonial-cards {
+                flex-direction: column;
+            }
+            
+            .section-title h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-robot"></i>
+                    OurDaily.ai
+                </a>
+                <ul class="nav-links">
+                </ul>
+                <div class="navbar-download-area" style="display: flex; flex-direction: column; align-items: center; margin-left: 20px; color: var(--dark);">
+                    <a href="#" id="os-download-button" class="btn btn-primary btn-sm" style="margin-bottom: 5px; white-space: nowrap;"></a>
+                    <div id="manual-os-switch" style="font-size: 0.8em; display: flex; align-items: center; white-space: nowrap; margin-top: 5px;">
+                        <span id="detected-os-text" style="margin-right: 5px;"></span>
+                        <span style="margin-right: 5px; color: var(--gray);">不是您的系統？</span>
+                        <a href="#" id="switch-to-windows-link" style="margin-right: 5px; color: var(--primary); text-decoration: none;">Win</a>|
+                        <a href="#" id="switch-to-mac-link" style="margin-left: 5px; color: var(--primary); text-decoration: none;">Mac</a>
+                    </div>
+                </div>
+                <div class="language-selector" style="display: flex; align-items: center; margin-right: 15px;">
+                    <a href="?lang=zh-CN" class="active-lang" style="text-decoration: none; margin-right: 10px; font-size: 0.9em;">简体中文</a>
+                    <a href="?lang=zh-TW" style="text-decoration: none; color: var(--dark); margin-right: 10px; font-size: 0.9em;">繁体中文</a>
+                    <a href="?lang=en" style="text-decoration: none; color: var(--dark); font-size: 0.9em;">English</a>
+                </div>
+                <div class="auth-buttons">
+                    <a href="/auth/login?lang=zh-CN" class="btn btn-outline">登录</a>
+                    <a href="/auth/register?lang=zh-CN" class="btn btn-primary">免费注册</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 (已移除) -->
+
+    <!-- 核心价值区域 -->
+    <section class="value-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>为什么选择 OurDaily.ai</h2>
+                <p>我们的平台专为简化您的日常工作流程而设计，让您专注于真正重要的事情</p>
+            </div>
+            <div class="value-cards">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>提高效率</h3>
+                    <p>自动化重复性任务，节省宝贵时间，让您专注于创造性工作</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI 驱动</h3>
+                    <p>利用最先进的人工智能技术，提供智能建议和解决方案</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>团队协作</h3>
+                    <p>无缝集成团队工作流程，促进协作和知识共享</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模板展示区 -->
+    <section class="templates-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>强大的 AI 助手</h2>
+                <p>探索我们的 AI 助手，为您的日常工作提供智能支持</p>
+            </div>
+            <div class="template-cards">
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-file-powerpoint"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 幻灯片助手</h3>
+                        <p>只需提供主题和关键点，AI 将为您生成专业的演示幻灯片</p>
+                        <a href="/check-login?tool=slides&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 文档助手</h3>
+                        <p>快速生成报告、提案和其他专业文档，节省宝贵时间</p>
+                        <a href="/check-login?tool=docs&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 数据分析助手</h3>
+                        <p>将复杂数据转化为有见解的图表和报告，帮助决策</p>
+                        <a href="/check-login?tool=data&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 日程规划助手</h3>
+                        <p>智能安排您的日程，优化时间管理，提高工作效率</p>
+                        <a href="/check-login?tool=schedule&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 邮件助手</h3>
+                        <p>帮助您起草专业邮件，提供语法检查和风格建议</p>
+                        <a href="/check-login?tool=email&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>AI 编程助手</h3>
+                        <p>提供代码建议、调试帮助和编程问题解决方案</p>
+                        <a href="/check-login?tool=code&lang=zh-CN" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户评价区 -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>用户反馈</h2>
+                <p>听听我们的用户如何评价 OurDaily.ai</p>
+            </div>
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>OurDaily.ai 彻底改变了我的工作方式。我现在能够在几分钟内完成以前需要几小时的任务。</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ZL</div>
+                        <div class="author-info">
+                            <h4>张丽</h4>
+                            <p>市场经理</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>作为一名自由职业者，OurDaily.ai 帮助我管理多个客户项目，提高了我的工作效率和专业水平。</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">WM</div>
+                        <div class="author-info">
+                            <h4>王明</h4>
+                            <p>自由设计师</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>我们整个团队都在使用 OurDaily.ai，它极大地提高了我们的协作效率和项目交付速度。</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LY</div>
+                        <div class="author-info">
+                            <h4>李阳</h4>
+                            <p>技术总监</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定价区 -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>选择适合您的方案</h2>
+                <p>我们提供灵活的定价方案，满足个人和团队的不同需求</p>
+            </div>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>免费版</h3>
+                    <div class="price">¥0<span>/月</span></div>
+                    <ul class="pricing-features">
+                        <li>基础 AI 助手功能</li>
+                        <li>每日限额 10 次请求</li>
+                        <li>标准响应速度</li>
+                        <li>基础模板库</li>
+                        <li>社区支持</li>
+                    </ul>
+                    <a href="/payment?plan=free&lang=zh-CN" class="btn btn-outline">选择方案</a>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">最受欢迎</div>
+                    <h3>专业版</h3>
+                    <div class="price">¥99<span>/月</span></div>
+                    <ul class="pricing-features">
+                        <li>全部 AI 助手功能</li>
+                        <li>无限请求次数</li>
+                        <li>优先响应速度</li>
+                        <li>完整模板库</li>
+                        <li>优先电子邮件支持</li>
+                        <li>高级数据分析</li>
+                    </ul>
+                    <a href="/payment?plan=pro&lang=zh-CN" class="btn btn-primary">选择方案</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>企业版</h3>
+                    <div class="price">¥299<span>/月</span></div>
+                    <ul class="pricing-features">
+                        <li>全部专业版功能</li>
+                        <li>团队协作工具</li>
+                        <li>最高响应速度</li>
+                        <li>自定义模板</li>
+                        <li>专属客户经理</li>
+                        <li>API 集成</li>
+                        <li>高级安全功能</li>
+                    </ul>
+                    <a href="/payment?plan=enterprise&lang=zh-CN" class="btn btn-outline">选择方案</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>OurDaily.ai</h3>
+                    <p>为个人和团队提供智能自动化解决方案，提高工作效率和生产力。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>产品</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">AI 助手</a></li>
+                        <li><a href="#">模板库</a></li>
+                        <li><a href="#">集成</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>资源</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">博客</a></li>
+                        <li><a href="#">教程</a></li>
+                        <li><a href="#">文档</a></li>
+                        <li><a href="#">社区</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>公司</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">关于我们</a></li>
+                        <li><a href="#">联系我们</a></li>
+                        <li><a href="#">加入我们</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 OurDaily.ai. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 检测操作系统并显示相应的下载按钮
+        document.addEventListener('DOMContentLoaded', function() {
+            const osDownloadButton = document.getElementById('os-download-button');
+            const detectedOsText = document.getElementById('detected-os-text');
+            const switchToWindowsLink = document.getElementById('switch-to-windows-link');
+            const switchToMacLink = document.getElementById('switch-to-mac-link');
+            
+            // 检测操作系统
+            let os = 'unknown';
+            if (navigator.userAgent.indexOf('Win') !== -1) os = 'windows';
+            else if (navigator.userAgent.indexOf('Mac') !== -1) os = 'mac';
+            else if (navigator.userAgent.indexOf('Linux') !== -1) os = 'linux';
+            
+            // 设置下载按钮文本和链接
+            function updateDownloadButton(targetOs) {
+                if (targetOs === 'windows') {
+                    osDownloadButton.textContent = '下载 Windows 客户端';
+                    osDownloadButton.href = '#windows-download';
+                    detectedOsText.textContent = '检测到 Windows 系统';
+                } else if (targetOs === 'mac') {
+                    osDownloadButton.textContent = '下载 macOS 客户端';
+                    osDownloadButton.href = '#mac-download';
+                    detectedOsText.textContent = '检测到 macOS 系统';
+                } else {
+                    osDownloadButton.textContent = '下载客户端';
+                    osDownloadButton.href = '#download';
+                    detectedOsText.textContent = '未检测到系统类型';
+                }
+            }
+            
+            // 初始设置
+            updateDownloadButton(os);
+            
+            // 添加切换事件
+            switchToWindowsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                updateDownloadButton('windows');
+            });
+            
+            switchToMacLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                updateDownloadButton('mac');
+            });
+        });
+    </script>
+</body>
+</html>

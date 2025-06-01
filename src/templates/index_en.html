@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OurDaily.ai - Your Personal and Team Daily Automation Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --primary-light: #E6F2FF;
+            --secondary: #FFC107;
+            --dark: #212529;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #28A745;
+            --danger: #DC3545;
+        }
+        
+        .language-selector a.active-lang {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navbar styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .auth-buttons .btn {
+            margin-left: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069D9;
+            border-color: #0062CC;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: 2px solid var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #E0A800;
+            border-color: #D39E00;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Hero section styles */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light), var(--white));
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* Core value section */
+        .value-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .value-cards {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .value-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .value-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .value-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .value-card p {
+            color: var(--gray);
+        }
+        
+        /* Templates Section */
+        .templates-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .template-cards {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+            justify-content: space-between; /* Distribute space between cards */
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .template-card {
+            flex-basis: calc(33.33% - 15px); /* 3 cards per row, considering gap */
+            min-width: 280px; /* Ensure a minimum width, adjust as needed */
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px; /* Add margin for rows */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .template-image {
+            height: 160px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 50px;
+        }
+        
+        .template-content {
+            padding: 20px;
+        }
+        
+        .template-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .template-content p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .testimonial-cards {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 80px;
+            color: var(--primary-light);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+        
+        .pricing-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .pricing-card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 350px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--primary);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .price span {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--gray);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: var(--gray);
+        }
+        
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ADB5BD;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: var(--white);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #495057;
+            color: #ADB5BD;
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin: 20px 0;
+            }
+            
+            .nav-links li {
+                margin: 0 10px;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .value-cards, .testimonial-cards {
+                flex-direction: column;
+            }
+            
+            .section-title h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-robot"></i>
+                    OurDaily.ai
+                </a>
+                <ul class="nav-links">
+                </ul>
+                <div class="navbar-download-area" style="display: flex; flex-direction: column; align-items: center; margin-left: 20px; color: var(--dark);">
+                    <a href="#" id="os-download-button" class="btn btn-primary btn-sm" style="margin-bottom: 5px; white-space: nowrap;"></a>
+                    <div id="manual-os-switch" style="font-size: 0.8em; display: flex; align-items: center; white-space: nowrap; margin-top: 5px;">
+                        <span id="detected-os-text" style="margin-right: 5px;"></span>
+                        <span style="margin-right: 5px; color: var(--gray);">Not your OS?</span>
+                        <a href="#" id="switch-to-windows-link" style="margin-right: 5px; color: var(--primary); text-decoration: none;">Win</a>|
+                        <a href="#" id="switch-to-mac-link" style="margin-left: 5px; color: var(--primary); text-decoration: none;">Mac</a>
+                    </div>
+                </div>
+                <div class="language-selector" style="display: flex; align-items: center; margin-right: 15px;">
+                    <a href="?lang=zh-CN" style="text-decoration: none; color: var(--dark); margin-right: 10px; font-size: 0.9em;">简体中文</a>
+                    <a href="?lang=zh-TW" style="text-decoration: none; color: var(--dark); margin-right: 10px; font-size: 0.9em;">繁体中文</a>
+                    <a href="?lang=en" class="active-lang" style="text-decoration: none; font-size: 0.9em;">English</a>
+                </div>
+                <div class="auth-buttons">
+                    <a href="/auth/login" class="btn btn-outline">Login</a>
+                    <a href="/auth/register" class="btn btn-primary">Sign Up Free</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section (Removed) -->
+
+    <!-- Core Value Section -->
+    <section class="value-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose OurDaily.ai</h2>
+                <p>Our platform is designed to simplify your daily workflows, allowing you to focus on what truly matters.</p>
+            </div>
+            <div class="value-cards">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Boost Efficiency</h3>
+                    <p>Save valuable time by automating repetitive tasks, allowing you to focus on creative work and strategic decisions.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Smart Assistant</h3>
+                    <p>Leverage advanced AI technology to get personalized recommendations and solutions, helping you make smarter decisions.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Team Collaboration</h3>
+                    <p>Streamline team communication and collaboration processes, ensuring all members stay in sync and move toward common goals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Section -->
+    <section class="templates-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tailored for Your Needs</h2>
+                <p>Explore our rich template library to meet various work scenario requirements</p>
+            </div>
+            <div class="template-cards">
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Project Management</h3>
+                        <p>Track project progress, assign tasks, set deadlines, and ensure projects are completed on time.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Data Analysis</h3>
+                        <p>Collect and analyze data, generate visual reports, and help you make data-driven decisions.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Email Automation</h3>
+                        <p>Set up auto-replies, schedule emails, manage subscription lists, and improve email marketing efficiency.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Invoice Management</h3>
+                        <p>Create and send professional invoices, track payment status, and automatically send payment reminders.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Task Management</h3>
+                        <p>Organize and prioritize tasks, set reminders, and share task lists with team members.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div class="template-image">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="template-content">
+                        <h3>Customer Support</h3>
+                        <p>Manage customer inquiries, auto-reply to common questions, and track customer satisfaction.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Customer Testimonials</h2>
+                <p>Hear what our customers say about OurDaily.ai</p>
+            </div>
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>Since using OurDaily.ai, my work efficiency has increased by at least 30%. It helps me automate many repetitive tasks, allowing me to focus on more important things.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>John Doe</h4>
+                            <p>Marketing Manager @ Tech Innovation Co.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>As a small team, we need to maximize our resources. OurDaily.ai has helped us streamline processes, increase productivity, and it's very reasonably priced.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JS</div>
+                        <div class="author-info">
+                            <h4>Jane Smith</h4>
+                            <p>Founder @ Startup</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>OurDaily.ai's customer support team is exceptional. They always respond quickly to my questions and provide detailed solutions. This level of service is rare in the industry.</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RJ</div>
+                        <div class="author-info">
+                            <h4>Robert Johnson</h4>
+                            <p>IT Director @ Educational Institution</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Choose the plan that best fits your needs</p>
+            </div>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$0<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Basic automation features</li>
+                        <li>5 preset templates</li>
+                        <li>100 operations per month</li>
+                        <li>Email support</li>
+                        <li>Single user</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-outline">Start Free</a>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Professional</h3>
+                    <div class="price">$19<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Advanced automation features</li>
+                        <li>20 preset templates</li>
+                        <li>Unlimited operations</li>
+                        <li>Priority email & chat support</li>
+                        <li>Up to 5 users</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-primary">Choose Plan</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$49<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>All automation features</li>
+                        <li>Unlimited templates</li>
+                        <li>Unlimited operations</li>
+                        <li>24/7 dedicated support</li>
+                        <li>Unlimited users</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-outline">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>OurDaily.ai</h3>
+                    <p>Simplify your daily workflows, increase efficiency, and focus on what truly matters.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Templates</a></li>
+                        <li><a href="#">Integrations</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 OurDaily.ai. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Detect OS and display appropriate download button
+        document.addEventListener('DOMContentLoaded', function() {
+            const osDownloadButton = document.getElementById('os-download-button');
+            const detectedOsText = document.getElementById('detected-os-text');
+            const switchToWindowsLink = document.getElementById('switch-to-windows-link');
+            const switchToMacLink = document.getElementById('switch-to-mac-link');
+            
+            // Detect OS
+            let os = 'unknown';
+            const userAgent = window.navigator.userAgent;
+            
+            if (userAgent.indexOf('Windows') !== -1) {
+                os = 'windows';
+            } else if (userAgent.indexOf('Mac') !== -1) {
+                os = 'mac';
+            } else if (userAgent.indexOf('Linux') !== -1) {
+                os = 'linux';
+            }
+            
+            // Set download button text and link
+            function setDownloadForOS(targetOS) {
+                if (targetOS === 'windows') {
+                    osDownloadButton.textContent = 'Download for Windows';
+                    osDownloadButton.href = '#windows-download';
+                    detectedOsText.textContent = 'Windows detected';
+                } else if (targetOS === 'mac') {
+                    osDownloadButton.textContent = 'Download for macOS';
+                    osDownloadButton.href = '#mac-download';
+                    detectedOsText.textContent = 'macOS detected';
+                } else {
+                    osDownloadButton.textContent = 'Choose Download';
+                    osDownloadButton.href = '#all-downloads';
+                    detectedOsText.textContent = 'System not detected';
+                }
+            }
+            
+            // Initial setup
+            setDownloadForOS(os);
+            
+            // Manual OS switching
+            switchToWindowsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                setDownloadForOS('windows');
+            });
+            
+            switchToMacLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                setDownloadForOS('mac');
+            });
+        });
+    </script>
+</body>
+</html>

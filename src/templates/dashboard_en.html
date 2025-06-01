@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - OurDaily.ai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --primary-light: #E6F2FF;
+            --dark: #212529;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .dashboard-header {
+            background-color: var(--white);
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .dashboard-logo a {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .dashboard-user-info {
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-username {
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .dashboard-logout a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .dashboard-logout a:hover {
+            text-decoration: underline;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-grow: 1;
+            padding: 0; /* No padding for the container itself */
+        }
+        .dashboard-work-list {
+            width: 25%;
+            background-color: var(--white);
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dashboard-operation-history {
+            width: 35%;
+            background-color: var(--white);
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dashboard-recordings {
+            width: 40%;
+            padding: 20px;
+            background-color: var(--light-gray);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .work-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .work-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .work-item:hover {
+            background-color: var(--primary-light);
+        }
+        .work-item.active {
+            background-color: var(--primary-light);
+            border-left: 3px solid var(--primary);
+        }
+        .work-icon {
+            margin-right: 10px;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        .work-info {
+            flex-grow: 1;
+        }
+        .work-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        .work-meta {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .work-date {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+        .operation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .operation-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .operation-prompt {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .operation-completion {
+            background-color: var(--light-gray);
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .operation-time {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 5px;
+        }
+        .recordings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .recording-item {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .recording-video {
+            width: 100%;
+            height: auto;
+        }
+        .recording-info {
+            padding: 10px;
+        }
+        .recording-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .recording-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .input-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-area textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .action-buttons .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+        .action-buttons .btn:hover {
+            background-color: #0056b3;
+        }
+        .action-buttons .btn-secondary {
+            background-color: var(--gray);
+        }
+        .action-buttons .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .section-title .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .dashboard-work-list,
+            .dashboard-operation-history,
+            .dashboard-recordings {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+            .dashboard-recordings {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="dashboard-logo">
+            <a href="/">OurDaily.ai</a>
+        </div>
+        <div class="dashboard-user-info">
+            <span class="dashboard-username">Hello, {{ username }}</span>
+            <span class="dashboard-logout"><a href="/auth/logout">Logout</a></span>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Left Work List -->
+        <aside class="dashboard-work-list">
+            <div class="section-title">
+                <h2>Work List</h2>
+                <button class="btn btn-sm" id="new-work-btn">New Work</button>
+            </div>
+            <div id="work-list-container">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i> Loading...
+                </div>
+            </div>
+        </aside>
+
+        <!-- Middle Operation History -->
+        <section class="dashboard-operation-history">
+            <div class="section-title">
+                <h2>Operation History</h2>
+                <span id="current-work-title"></span>
+            </div>
+            <div id="operation-history-container">
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>Please select a work from the left or create a new one</p>
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea id="prompt-input" placeholder="Enter your instruction here..."></textarea>
+                <div class="action-buttons">
+                    <button class="btn" id="send-prompt-btn">Send</button>
+                    <button class="btn btn-secondary" id="record-btn">Start Recording</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Recordings -->
+        <main class="dashboard-recordings">
+            <div class="section-title">
+                <h2>Operation Recordings</h2>
+            </div>
+            <div id="recordings-container">
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>No recordings available</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentWorkId = null;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        
+        // API base URL
+        const API_BASE_URL = 'http://34.87.121.105:5000';
+
+        // Execute when page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load work list
+            loadWorkList();
+
+            // Bind events
+            document.getElementById('new-work-btn').addEventListener('click', createNewWork);
+            document.getElementById('send-prompt-btn').addEventListener('click', sendPrompt);
+            document.getElementById('record-btn').addEventListener('click', toggleRecording);
+        });
+
+        // Load work list
+        function loadWorkList() {
+            const container = document.getElementById('work-list-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Loading...</div>';
+            
+            // Call API to get work list
+            fetch(`${API_BASE_URL}/api/works`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(works => {
+                    renderWorkList(works);
+                })
+                .catch(error => {
+                    console.error('Error loading works:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load</p></div>';
+                });
+        }
+
+        // Render work list
+        function renderWorkList(works) {
+            const container = document.getElementById('work-list-container');
+            
+            if (!works || works.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>No works available</p></div>';
+                return;
+            }
+
+            let html = '<ul class="work-list">';
+            works.forEach(work => {
+                const date = new Date(work.created_at);
+                const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
+                
+                html += `
+                    <li class="work-item" data-id="${work.id}" onclick="selectWork('${work.id}')">
+                        <div class="work-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="work-info">
+                            <div class="work-title">${work.title}</div>
+                            <div class="work-meta">${work.first_prompt.substring(0, 30)}${work.first_prompt.length > 30 ? '...' : ''}</div>
+                        </div>
+                        <div class="work-date">${formattedDate}</div>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            
+            container.innerHTML = html;
+            
+            // If there's a currently selected work, maintain selection
+            if (currentWorkId) {
+                const workItem = document.querySelector(`.work-item[data-id="${currentWorkId}"]`);
+                if (workItem) {
+                    workItem.classList.add('active');
+                }
+            }
+        }
+
+        // Select work
+        function selectWork(workId) {
+            // Update current work ID
+            currentWorkId = workId;
+            
+            // Update UI state
+            document.querySelectorAll('.work-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const selectedItem = document.querySelector(`.work-item[data-id="${workId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+                
+                // Update current work title
+                const workTitle = selectedItem.querySelector('.work-title').textContent;
+                document.getElementById('current-work-title').textContent = workTitle;
+            }
+            
+            // Load operation history for this work
+            loadOperationHistory(workId);
+            
+            // Load recordings for this work
+            loadRecordings(workId);
+        }
+
+        // Load operation history
+        function loadOperationHistory(workId) {
+            const container = document.getElementById('operation-history-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Loading...</div>';
+            
+            // Call API to get operation history
+            fetch(`${API_BASE_URL}/api/operations?work_id=${workId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(operations => {
+                    renderOperationHistory(operations);
+                })
+                .catch(error => {
+                    console.error('Error loading operations:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load</p></div>';
+                });
+        }
+
+        // Render operation history
+        function renderOperationHistory(operations) {
+            const container = document.getElementById('operation-history-container');
+            
+            if (!operations || operations.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-comment-dots"></i><p>No operations available</p></div>';
+                return;
+            }
+
+            let html = '<div class="operation-list">';
+            // Sort by time, newest at the bottom
+            operations.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            
+            operations.forEach(operation => {
+                const date = new Date(operation.created_at);
+                const formattedTime = date.toLocaleTimeString();
+                
+                html += `
+                    <div class="operation-item">
+                        <div class="operation-prompt">${operation.prompt}</div>
+                        <div class="operation-completion">${operation.completion}</div>
+                        <div class="operation-time">${formattedTime}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // Scroll to the bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Load recordings
+        function loadRecordings(workId) {
+            const container = document.getElementById('recordings-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Loading...</div>';
+            
+            // Call API to get recordings list
+            fetch(`${API_BASE_URL}/api/recordings?work_id=${workId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(recordings => {
+                    renderRecordings(recordings);
+                })
+                .catch(error => {
+                    console.error('Error loading recordings:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Failed to load</p></div>';
+                });
+        }
+
+        // Render recordings
+        function renderRecordings(recordings) {
+            const container = document.getElementById('recordings-container');
+            
+            if (!recordings || recordings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>No recordings available</p></div>';
+                return;
+            }
+
+            let html = '<div class="recordings-grid">';
+            recordings.forEach(recording => {
+                const date = new Date(recording.created_at);
+                const formattedTime = date.toLocaleTimeString();
+                
+                html += `
+                    <div class="recording-item">
+                        <video class="recording-video" controls>
+                            <source src="${API_BASE_URL}${recording.url}" type="video/webm">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="recording-info">
+                            <div class="recording-title">Recording ${recording.id}</div>
+                            <div class="recording-time">${formattedTime}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+
+        // Create new work
+        function createNewWork() {
+            const promptInput = document.getElementById('prompt-input');
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                alert('Please enter an instruction');
+                return;
+            }
+            
+            // Call API to create new work
+            fetch(`${API_BASE_URL}/api/works/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(work => {
+                    // Clear input
+                    promptInput.value = '';
+                    
+                    // Reload work list
+                    loadWorkList();
+                    
+                    // Select the newly created work
+                    setTimeout(() => {
+                        selectWork(work.id);
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error creating work:', error);
+                    alert('Failed to create work, please try again');
+                });
+        }
+
+        // Send prompt
+        function sendPrompt() {
+            if (!currentWorkId) {
+                // If no work is selected, create a new one
+                createNewWork();
+                return;
+            }
+            
+            const promptInput = document.getElementById('prompt-input');
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                alert('Please enter an instruction');
+                return;
+            }
+            
+            // Call API to send prompt
+            fetch(`${API_BASE_URL}/api/operations/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    work_id: currentWorkId,
+                    prompt: prompt
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(operation => {
+                    // Clear input
+                    promptInput.value = '';
+                    
+                    // Reload operation history
+                    loadOperationHistory(currentWorkId);
+                })
+                .catch(error => {
+                    console.error('Error sending prompt:', error);
+                    alert('Failed to send prompt, please try again');
+                });
+        }
+
+        // Toggle recording state
+        function toggleRecording() {
+            if (!currentWorkId) {
+                alert('Please select or create a work first');
+                return;
+            }
+            
+            const recordBtn = document.getElementById('record-btn');
+            
+            if (isRecording) {
+                // Stop recording
+                stopRecording();
+                recordBtn.textContent = 'Start Recording';
+                recordBtn.classList.remove('btn-danger');
+                recordBtn.classList.add('btn-secondary');
+            } else {
+                // Start recording
+                startRecording();
+                recordBtn.textContent = 'Stop Recording';
+                recordBtn.classList.remove('btn-secondary');
+                recordBtn.classList.add('btn-danger');
+            }
+            
+            isRecording = !isRecording;
+        }
+
+        // Start recording
+        function startRecording() {
+            navigator.mediaDevices.getDisplayMedia({
+                video: {
+                    cursor: 'always'
+                },
+                audio: false
+            }).then(stream => {
+                // Create MediaRecorder instance
+                mediaRecorder = new MediaRecorder(stream);
+                
+                // Listen for data available event
+                mediaRecorder.ondataavailable = function(e) {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                
+                // Listen for recording stop event
+                mediaRecorder.onstop = function() {
+                    // Combine recorded data
+                    const blob = new Blob(recordedChunks, {
+                        type: 'video/webm'
+                    });
+                    
+                    // Upload recording
+                    uploadRecording(blob);
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // Clear recorded data
+                    recordedChunks = [];
+                };
+                
+                // Start recording
+                mediaRecorder.start();
+            }).catch(error => {
+                console.error('Error getting screen share:', error);
+                alert('Failed to get screen share, please try again');
+                
+                // Reset state
+                isRecording = false;
+                const recordBtn = document.getElementById('record-btn');
+                recordBtn.textContent = 'Start Recording';
+                recordBtn.classList.remove('btn-danger');
+                recordBtn.classList.add('btn-secondary');
+            });
+        }
+
+        // Stop recording
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        // Upload recording
+        function uploadRecording(blob) {
+            // Create FormData object
+            const formData = new FormData();
+            formData.append('work_id', currentWorkId);
+            formData.append('recording', blob, 'recording.webm');
+            
+            // Call API to upload recording
+            fetch(`${API_BASE_URL}/api/recordings/upload`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(recording => {
+                    // Reload recordings list
+                    loadRecordings(currentWorkId);
+                })
+                .catch(error => {
+                    console.error('Error uploading recording:', error);
+                    alert('Failed to upload recording, please try again');
+                });
+        }
+    </script>
+</body>
+</html>

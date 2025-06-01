@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OurDaily.ai - 定價</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+        .pricing-header {
+            max-width: 700px;
+        }
+        .card-deck .card {
+            min-width: 220px;
+        }
+        .border-primary {
+            border-width: 2px !important;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+        }
+        .most-popular {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #007bff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-check {
+            color: #28a745;
+            margin-right: 8px;
+        }
+        .feature-times {
+            color: #dc3545;
+            margin-right: 8px;
+        }
+        .feature-limited {
+            color: #ffc107;
+            margin-right: 8px;
+        }
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,.08);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .nav-link {
+            color: #333;
+        }
+        .nav-link:hover {
+            color: #007bff;
+        }
+        .language-selector {
+            margin-left: 15px;
+        }
+        .language-selector a {
+            margin-left: 5px;
+            text-decoration: none;
+            color: #6c757d;
+        }
+        .language-selector a:hover {
+            color: #007bff;
+        }
+        .language-selector a.active {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/index?lang=zh-TW">OurDaily.ai</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index?lang=zh-TW">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/pricing?lang=zh-TW">定價</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="language-selector">
+                        <a href="/pricing?lang=zh-CN">简体中文</a>
+                        <a href="/pricing?lang=zh-TW" class="active">繁體中文</a>
+                        <a href="/pricing?lang=en">English</a>
+                    </div>
+                    <div class="ms-3">
+                        {% if is_logged_in %}
+                            <a href="/dashboard?lang=zh-TW" class="btn btn-outline-primary me-2">儀表板</a>
+                            <a href="/auth/logout?lang=zh-TW" class="btn btn-outline-secondary">登出</a>
+                        {% else %}
+                            <a href="/auth/login?lang=zh-TW" class="btn btn-outline-primary me-2">登入</a>
+                            <a href="/auth/register?lang=zh-TW" class="btn btn-primary">免費註冊</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 定價標題 -->
+    <div class="container py-5">
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-bold">選擇適合您的方案</h1>
+            <p class="fs-5 text-muted">我們提供多種靈活的方案，滿足您的不同需求。無論您是個人用戶還是企業團隊，都能找到最適合的選擇。</p>
+        </div>
+
+        <!-- 定價卡片 -->
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <!-- 免費版 -->
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">免費版</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">¥0<small class="text-muted fw-light">/月</small></h1>
+                        <ul class="feature-list mt-3 mb-4">
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 基礎AI助手功能</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 每日5次查詢限制</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 標準響應速度</li>
+                            <li><i class="bi bi-x-circle feature-times">✗</i> 無高級功能</li>
+                            <li><i class="bi bi-x-circle feature-times">✗</i> 無優先支持</li>
+                        </ul>
+                        <a href="/payment?plan=free&lang=zh-TW" class="w-100 btn btn-lg btn-outline-primary">開始使用</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 專業版 -->
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-primary position-relative">
+                    <div class="most-popular">最受歡迎</div>
+                    <div class="card-header py-3 text-bg-primary border-primary">
+                        <h4 class="my-0 fw-normal">專業版</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">¥99<small class="text-muted fw-light">/月</small></h1>
+                        <ul class="feature-list mt-3 mb-4">
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 全部AI助手功能</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 無限次查詢</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 優先響應速度</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 高級功能訪問</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 標準支持</li>
+                        </ul>
+                        <a href="/payment?plan=pro&lang=zh-TW" class="w-100 btn btn-lg btn-primary">立即升級</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 企業版 -->
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">企業版</h4>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title pricing-card-title">¥299<small class="text-muted fw-light">/月</small></h1>
+                        <ul class="feature-list mt-3 mb-4">
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 全部專業版功能</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 團隊協作功能</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 最高響應速度</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 專屬API訪問</li>
+                            <li><i class="bi bi-check-circle feature-check">✓</i> 24/7優先支持</li>
+                        </ul>
+                        <a href="/payment?plan=enterprise&lang=zh-TW" class="w-100 btn btn-lg btn-outline-primary">聯繫銷售</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 常見問題 -->
+        <h2 class="text-center mt-5 mb-4">常見問題</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="pricingFAQ">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                如何選擇適合我的方案？
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#pricingFAQ">
+                            <div class="accordion-body">
+                                如果您是初次使用或只有基本需求，可以先選擇免費版體驗。對於需要更多功能和無限制使用的個人用戶，推薦選擇專業版。企業版則適合需要團隊協作和高級支持的企業用戶。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                我可以隨時更改我的訂閱方案嗎？
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#pricingFAQ">
+                            <div class="accordion-body">
+                                是的，您可以隨時升級或降級您的訂閱方案。升級將立即生效，降級將在當前計費週期結束後生效。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                支持哪些支付方式？
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#pricingFAQ">
+                            <div class="accordion-body">
+                                我們支持多種支付方式，包括信用卡、支付寶、微信支付等。企業用戶還可以選擇對公轉賬。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                有退款政策嗎？
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#pricingFAQ">
+                            <div class="accordion-body">
+                                是的，如果您在購買後7天內不滿意，可以申請全額退款。超過7天的訂閱將按比例退還未使用部分的費用。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>OurDaily.ai</h5>
+                    <p class="text-muted">讓AI助手成為您日常工作的得力助手，提升效率，激發創意。</p>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>產品</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none text-muted">AI助手</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">幻燈片生成</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">文檔助手</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">數據分析</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>公司</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none text-muted">關於我們</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">聯繫我們</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">加入我們</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">博客</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>支持</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none text-muted">幫助中心</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">API文檔</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">社區</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">狀態</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h5>法律</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none text-muted">隱私政策</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">服務條款</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Cookie政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-top pt-4 mt-4 text-center text-muted">
+                <p>&copy; 2025 OurDaily.ai. 保留所有權利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

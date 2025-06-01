@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>控制台 - OurDaily.ai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --primary-light: #E6F2FF;
+            --dark: #212529;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .dashboard-header {
+            background-color: var(--white);
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .dashboard-logo a {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .dashboard-user-info {
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-username {
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .dashboard-logout a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .dashboard-logout a:hover {
+            text-decoration: underline;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-grow: 1;
+            padding: 0; /* No padding for the container itself */
+        }
+        .dashboard-work-list {
+            width: 25%;
+            background-color: var(--white);
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dashboard-operation-history {
+            width: 35%;
+            background-color: var(--white);
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .dashboard-recordings {
+            width: 40%;
+            padding: 20px;
+            background-color: var(--light-gray);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .work-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .work-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .work-item:hover {
+            background-color: var(--primary-light);
+        }
+        .work-item.active {
+            background-color: var(--primary-light);
+            border-left: 3px solid var(--primary);
+        }
+        .work-icon {
+            margin-right: 10px;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        .work-info {
+            flex-grow: 1;
+        }
+        .work-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        .work-meta {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .work-date {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+        .operation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .operation-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .operation-prompt {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .operation-completion {
+            background-color: var(--light-gray);
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .operation-time {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 5px;
+        }
+        .recordings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .recording-item {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .recording-video {
+            width: 100%;
+            height: auto;
+        }
+        .recording-info {
+            padding: 10px;
+        }
+        .recording-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .recording-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        .input-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-area textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .action-buttons .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+        }
+        .action-buttons .btn:hover {
+            background-color: #0056b3;
+        }
+        .action-buttons .btn-secondary {
+            background-color: var(--gray);
+        }
+        .action-buttons .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .section-title .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .dashboard-work-list,
+            .dashboard-operation-history,
+            .dashboard-recordings {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+            .dashboard-recordings {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="dashboard-logo">
+            <a href="/">OurDaily.ai</a>
+        </div>
+        <div class="dashboard-user-info">
+            <span class="dashboard-username">您好, {{ username }}</span>
+            <span class="dashboard-logout"><a href="/auth/logout">登出</a></span>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- 左侧工作列表 -->
+        <aside class="dashboard-work-list">
+            <div class="section-title">
+                <h2>工作列表</h2>
+                <button class="btn btn-sm" id="new-work-btn">新建工作</button>
+            </div>
+            <div id="work-list-container">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i> 加载中...
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间操作历史 -->
+        <section class="dashboard-operation-history">
+            <div class="section-title">
+                <h2>操作历史</h2>
+                <span id="current-work-title"></span>
+            </div>
+            <div id="operation-history-container">
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>请选择左侧工作或创建新工作</p>
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea id="prompt-input" placeholder="在此输入您的指令..."></textarea>
+                <div class="action-buttons">
+                    <button class="btn" id="send-prompt-btn">发送</button>
+                    <button class="btn btn-secondary" id="record-btn">开始录屏</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 右侧录屏展示 -->
+        <main class="dashboard-recordings">
+            <div class="section-title">
+                <h2>操作录屏</h2>
+            </div>
+            <div id="recordings-container">
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>暂无录屏</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentWorkId = null;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        
+        // API基础URL
+        const API_BASE_URL = 'http://34.87.121.105:5000';
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载工作列表
+            loadWorkList();
+
+            // 绑定事件
+            document.getElementById('new-work-btn').addEventListener('click', createNewWork);
+            document.getElementById('send-prompt-btn').addEventListener('click', sendPrompt);
+            document.getElementById('record-btn').addEventListener('click', toggleRecording);
+        });
+
+        // 加载工作列表
+        function loadWorkList() {
+            const container = document.getElementById('work-list-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> 加载中...</div>';
+            
+            // 调用API获取工作列表
+            fetch(`${API_BASE_URL}/api/works`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(works => {
+                    renderWorkList(works);
+                })
+                .catch(error => {
+                    console.error('加载工作列表失败:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>加载失败</p></div>';
+                });
+        }
+
+        // 渲染工作列表
+        function renderWorkList(works) {
+            const container = document.getElementById('work-list-container');
+            
+            if (!works || works.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>暂无工作</p></div>';
+                return;
+            }
+
+            let html = '<ul class="work-list">';
+            works.forEach(work => {
+                const date = new Date(work.created_at);
+                const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日`;
+                
+                html += `
+                    <li class="work-item" data-id="${work.id}" onclick="selectWork('${work.id}')">
+                        <div class="work-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="work-info">
+                            <div class="work-title">${work.title}</div>
+                            <div class="work-meta">${work.first_prompt.substring(0, 30)}${work.first_prompt.length > 30 ? '...' : ''}</div>
+                        </div>
+                        <div class="work-date">${formattedDate}</div>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            
+            container.innerHTML = html;
+            
+            // 如果有当前选中的工作，保持选中状态
+            if (currentWorkId) {
+                const workItem = document.querySelector(`.work-item[data-id="${currentWorkId}"]`);
+                if (workItem) {
+                    workItem.classList.add('active');
+                }
+            }
+        }
+
+        // 选择工作
+        function selectWork(workId) {
+            // 更新当前工作ID
+            currentWorkId = workId;
+            
+            // 更新UI状态
+            document.querySelectorAll('.work-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const selectedItem = document.querySelector(`.work-item[data-id="${workId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+                
+                // 更新当前工作标题
+                const workTitle = selectedItem.querySelector('.work-title').textContent;
+                document.getElementById('current-work-title').textContent = workTitle;
+            }
+            
+            // 加载该工作的操作历史
+            loadOperationHistory(workId);
+            
+            // 加载该工作的录屏
+            loadRecordings(workId);
+        }
+
+        // 加载操作历史
+        function loadOperationHistory(workId) {
+            const container = document.getElementById('operation-history-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> 加载中...</div>';
+            
+            // 调用API获取操作历史
+            fetch(`${API_BASE_URL}/api/operations?work_id=${workId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(operations => {
+                    renderOperationHistory(operations);
+                })
+                .catch(error => {
+                    console.error('加载操作历史失败:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>加载失败</p></div>';
+                });
+        }
+
+        // 渲染操作历史
+        function renderOperationHistory(operations) {
+            const container = document.getElementById('operation-history-container');
+            
+            if (!operations || operations.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-comment-dots"></i><p>暂无操作记录</p></div>';
+                return;
+            }
+
+            let html = '<div class="operation-list">';
+            // 按时间排序，最新的在最下面
+            operations.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            
+            operations.forEach(operation => {
+                const date = new Date(operation.created_at);
+                const formattedTime = date.toLocaleTimeString();
+                
+                html += `
+                    <div class="operation-item">
+                        <div class="operation-prompt">${operation.prompt}</div>
+                        <div class="operation-completion">${operation.completion}</div>
+                        <div class="operation-time">${formattedTime}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // 滚动到最底部
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 加载录屏
+        function loadRecordings(workId) {
+            const container = document.getElementById('recordings-container');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> 加载中...</div>';
+            
+            // 调用API获取录屏列表
+            fetch(`${API_BASE_URL}/api/recordings?work_id=${workId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(recordings => {
+                    renderRecordings(recordings);
+                })
+                .catch(error => {
+                    console.error('加载录屏失败:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>加载失败</p></div>';
+                });
+        }
+
+        // 渲染录屏
+        function renderRecordings(recordings) {
+            const container = document.getElementById('recordings-container');
+            
+            if (!recordings || recordings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><p>暂无录屏</p></div>';
+                return;
+            }
+
+            let html = '<div class="recordings-grid">';
+            recordings.forEach(recording => {
+                const date = new Date(recording.created_at);
+                const formattedTime = date.toLocaleTimeString();
+                
+                html += `
+                    <div class="recording-item">
+                        <video class="recording-video" controls>
+                            <source src="${API_BASE_URL}${recording.url}" type="video/webm">
+                            您的浏览器不支持视频标签。
+                        </video>
+                        <div class="recording-info">
+                            <div class="recording-title">录屏 ${recording.id}</div>
+                            <div class="recording-time">${formattedTime}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+
+        // 创建新工作
+        function createNewWork() {
+            const promptInput = document.getElementById('prompt-input');
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                alert('请输入指令');
+                return;
+            }
+            
+            // 调用API创建新工作
+            fetch(`${API_BASE_URL}/api/works/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(work => {
+                    // 清空输入框
+                    promptInput.value = '';
+                    
+                    // 重新加载工作列表
+                    loadWorkList();
+                    
+                    // 选择新创建的工作
+                    setTimeout(() => {
+                        selectWork(work.id);
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('创建工作失败:', error);
+                    alert('创建工作失败，请重试');
+                });
+        }
+
+        // 发送指令
+        function sendPrompt() {
+            if (!currentWorkId) {
+                // 如果没有选中的工作，则创建新工作
+                createNewWork();
+                return;
+            }
+            
+            const promptInput = document.getElementById('prompt-input');
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                alert('请输入指令');
+                return;
+            }
+            
+            // 调用API发送指令
+            fetch(`${API_BASE_URL}/api/operations/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    work_id: currentWorkId,
+                    prompt: prompt
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(operation => {
+                    // 清空输入框
+                    promptInput.value = '';
+                    
+                    // 重新加载操作历史
+                    loadOperationHistory(currentWorkId);
+                })
+                .catch(error => {
+                    console.error('发送指令失败:', error);
+                    alert('发送指令失败，请重试');
+                });
+        }
+
+        // 切换录屏状态
+        function toggleRecording() {
+            if (!currentWorkId) {
+                alert('请先选择或创建一个工作');
+                return;
+            }
+            
+            const recordBtn = document.getElementById('record-btn');
+            
+            if (isRecording) {
+                // 停止录屏
+                stopRecording();
+                recordBtn.textContent = '开始录屏';
+                recordBtn.classList.remove('btn-danger');
+                recordBtn.classList.add('btn-secondary');
+            } else {
+                // 开始录屏
+                startRecording();
+                recordBtn.textContent = '停止录屏';
+                recordBtn.classList.remove('btn-secondary');
+                recordBtn.classList.add('btn-danger');
+            }
+            
+            isRecording = !isRecording;
+        }
+
+        // 开始录屏
+        function startRecording() {
+            navigator.mediaDevices.getDisplayMedia({
+                video: {
+                    cursor: 'always'
+                },
+                audio: false
+            }).then(stream => {
+                // 创建MediaRecorder实例
+                mediaRecorder = new MediaRecorder(stream);
+                
+                // 监听数据可用事件
+                mediaRecorder.ondataavailable = function(e) {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                
+                // 监听录制停止事件
+                mediaRecorder.onstop = function() {
+                    // 合并录制的数据
+                    const blob = new Blob(recordedChunks, {
+                        type: 'video/webm'
+                    });
+                    
+                    // 上传录屏
+                    uploadRecording(blob);
+                    
+                    // 停止所有轨道
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    // 清空录制的数据
+                    recordedChunks = [];
+                };
+                
+                // 开始录制
+                mediaRecorder.start();
+            }).catch(error => {
+                console.error('获取屏幕共享失败:', error);
+                alert('获取屏幕共享失败，请重试');
+                
+                // 重置状态
+                isRecording = false;
+                const recordBtn = document.getElementById('record-btn');
+                recordBtn.textContent = '开始录屏';
+                recordBtn.classList.remove('btn-danger');
+                recordBtn.classList.add('btn-secondary');
+            });
+        }
+
+        // 停止录屏
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        // 上传录屏
+        function uploadRecording(blob) {
+            // 创建FormData对象
+            const formData = new FormData();
+            formData.append('work_id', currentWorkId);
+            formData.append('recording', blob, 'recording.webm');
+            
+            // 调用API上传录屏
+            fetch(`${API_BASE_URL}/api/recordings/upload`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(recording => {
+                    // 重新加载录屏列表
+                    loadRecordings(currentWorkId);
+                })
+                .catch(error => {
+                    console.error('上传录屏失败:', error);
+                    alert('上传录屏失败，请重试');
+                });
+        }
+    </script>
+</body>
+</html>
